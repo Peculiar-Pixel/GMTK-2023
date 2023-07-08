@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed = 1;
+    [SerializeField] private bool controllerDisabled = false;
+    [SerializeField] private int dashDisabledTimeMilliseconds = 200;
     private Rigidbody2D rb;
 
     // Start is called before the first frame update
@@ -20,5 +22,7 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         rb.velocity = new Vector3(horizontal, vertical, 0) * Time.deltaTime * speed;
+
+        //if (Input.GetAxis("Dash")) ;
     }
 }
