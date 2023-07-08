@@ -8,6 +8,35 @@ public class ViewCone : MonoBehaviour
     [Range(0, 360)]
     public float viewAngle;
 
+    public LayerMask targetMask;
+    public LayerMask obstacleMask;
+
+    public Vector3 lastKnownLocation;
+
+    private void FixedUpdate()
+    {
+        FindVisibleTargets();
+    }
+
+    void FindVisibleTargets()
+    {
+        Collider2D[] targetsInViewRadius = Physics2D.OverlapCircleAll(transform.position, viewRadius, targetMask);
+
+        for (int i = 0; i < targetsInViewRadius.Length; i++)
+        {
+            Transform target = targetsInViewRadius[i].transform;
+            Vector3 dirToTarget = (target.position - transform.position).normalized;
+            if(Vector3.Angle(transform.up, dirToTarget) < viewAngle / 2)
+            {
+                float dstToTarget = Vector3.Distance(transform.position, target.position);
+                if(!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
+                {
+                    lastKnownLocation = target.position;
+                }
+            }
+        }
+    }
+
     public Vector3 DirFromAngle(float angleInDegrees, bool angleIsGlobal)
     {
         if (!angleIsGlobal)
