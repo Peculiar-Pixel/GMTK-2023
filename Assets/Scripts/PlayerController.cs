@@ -4,14 +4,31 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float speed = 1;
-    [SerializeField] private bool disabled = false;
-    [SerializeField] private float dashDisabledTimeSeconds = 0.5f;
+    private enum MotionState
+    {
+        idle,
+        walking,
+        running,
+        dashing
+    }
 
+    //visible in inspector for debugging
+    [SerializeField] private MotionState motionState = MotionState.idle;
+
+    //set from inspector
+    [SerializeField] private float walkSpeed, runSpeed, dashSpeed, staminaChangeSpeed;
+    [SerializeField] private float dashTimeSeconds, dashCooldownSeconds;
+    [SerializeField] private float stamina;
+
+    //direction handling
+    private Vector3 moveDir;
+    private Vector3 nonzeroDir = new Vector3(1, 0, 0);
+
+    //internal variables
     private Rigidbody2D rb;
-    private Vector3 motion;
-    private int rotation;
-
+    private int zRotation;
+    private bool canDash = true;
+    private float speed;
     private Vector3[] eightAxis = new Vector3[] { new Vector3(1, 0, 0), new Vector3(1, 1, 0), new Vector3(0, 1, 0), new Vector3(-1, 1, 0), new Vector3(-1, 0, 0), new Vector3(-1, -1, 0), new Vector3(0, -1, 0), new Vector3(1, -1, 0) };
 
     // Start is called before the first frame update
@@ -24,46 +41,80 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-        if (!disabled)
+        if (motionState != MotionState.dashing)
         {
-            //Walk/Run direction
-            motion = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
+            //get move direction
+            moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
+            if (moveDir != Vector3.zero)
+            {
+                nonzeroDir = moveDir;
+            }
 
-            //8-axis rotation
-            Vector3 dir = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
+            //set move state
+            if (moveDir == Vector3.zero)
+            {
+                motionState = MotionState.idle;
+            }
+            else if (Input.GetAxisRaw("Run") != 0 && stamina > 0)
+            {
+                motionState = MotionState.running;
+                speed = runSpeed;
+            }
+            else
+            {
+                motionState = MotionState.walking;
+                speed = walkSpeed;
+            }
 
+            //Run handling
+            if (motionState == MotionState.running)
+            {
+                stamina -= Mathf.Clamp(staminaChangeSpeed * Time.deltaTime, 0, 100);
+
+                if (stamina <= 0)
+                {
+                    motionState = MotionState.idle;
+                }
+            }
+            else if (stamina < 100 && Input.GetAxisRaw("Run") == 0)
+            {
+                stamina += Mathf.Clamp(staminaChangeSpeed * Time.deltaTime, 0, 100);
+            }
+
+            //set 8-axis rotation
             for (int i = 0; i < 8; i++)
             {
-                if (dir == eightAxis[i])
+                if (moveDir == eightAxis[i])
                 {
-                    rotation = i * 45;
+                    zRotation = i * 45;
                     break;
                 }
             }
-
-            transform.rotation = Quaternion.Euler(0, 0, rotation);
+            transform.rotation = Quaternion.Euler(0, 0, zRotation);
 
             //Dash handling
-            if (Input.GetAxis("Dash") != 0)
+            if (Input.GetAxisRaw("Dash") != 0 && canDash)
             {
-                Debug.Log("Dash start");
-                StartCoroutine(DisableForSeconds(dashDisabledTimeSeconds));
-                //cancel current movement
-                motion = Vector3.zero;
-
-                //do dash
+                StartCoroutine(Dash());
+                return; //break out of walk/run/idle mode
             }
 
             //do moton
-            rb.velocity = motion * Time.deltaTime * speed;
+            rb.velocity = moveDir * Time.deltaTime * speed;
         }
     }
 
-    private IEnumerator DisableForSeconds(float seconds)
+    private IEnumerator Dash()
     {
-        disabled = true;
-        yield return new WaitForSecondsRealtime(seconds);
-        disabled = false;
-        Debug.Log("Dash end");
+        canDash = false;
+
+        motionState = MotionState.dashing;
+        rb.velocity = nonzeroDir * dashSpeed; //dash
+        yield return new WaitForSeconds(dashTimeSeconds);
+
+        motionState = MotionState.walking;
+        yield return new WaitForSeconds(dashCooldownSeconds);
+
+        canDash = true;
     }
 }
