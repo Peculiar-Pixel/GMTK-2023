@@ -18,5 +18,6 @@ public class CameraController : MonoBehaviour
         {
             transform.position = new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z);
         }
+        else Debug.Log("Main Camera has no reference to the player");
     }
 }
