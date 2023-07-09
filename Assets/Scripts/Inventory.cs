@@ -14,6 +14,8 @@ public class Inventory : MonoBehaviour
 
     private GameObject interactionArea;
 
+    private bool placedAllItems = false;
+
     public void GetNewItem(GameObject item, GameObject graphics)
     {
         for (int i = 0; i < slots.Length; i++)
@@ -33,6 +35,12 @@ public class Inventory : MonoBehaviour
     {
         isFull[itemIndex] = false;
         Destroy(items[itemIndex]);
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (isFull[i] == true)
+                return;
+        }
+        placedAllItems = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -57,10 +65,17 @@ public class Inventory : MonoBehaviour
     {
         if (Input.GetButtonDown("Interact") && canPlaceItem && interactionArea)
         {
-            int i = interactionArea.GetComponent<InteractionArea>().requiredItemIndex;
-            RemoveItem(i);
-            Instantiate(itemsGraphic[i], interactionArea.transform, false);
-        }
-        
+            if(!interactionArea.GetComponent<InteractionArea>().ExitStage)
+            {
+                int i = interactionArea.GetComponent<InteractionArea>().requiredItemIndex;
+                RemoveItem(i);
+                Instantiate(itemsGraphic[i], interactionArea.transform, false);
+            }
+            else
+            {
+                //change later
+                if (placedAllItems) SceneManager.LoadSceneAsync(0);
+            }
+        }        
     }
 }
