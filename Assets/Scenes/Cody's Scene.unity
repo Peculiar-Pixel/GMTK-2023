@@ -4385,7 +4385,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1371769740446700797, guid: b06a3579b87940e449a3c0f250de61b9, type: 3}
       propertyPath: m_Color.g
-      value: 0
+      value: 0.4745098
       objectReference: {fileID: 0}
     - target: {fileID: 1371769740446700797, guid: b06a3579b87940e449a3c0f250de61b9, type: 3}
       propertyPath: m_Color.r
@@ -4405,11 +4405,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5088712924478423128, guid: b06a3579b87940e449a3c0f250de61b9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.24
+      value: 6.11
       objectReference: {fileID: 0}
     - target: {fileID: 5088712924478423128, guid: b06a3579b87940e449a3c0f250de61b9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.73
       objectReference: {fileID: 0}
     - target: {fileID: 5088712924478423128, guid: b06a3579b87940e449a3c0f250de61b9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4472,10 +4472,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b7e645389529545a5b442b3f59c7aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PatrolPoints: []
-  viewDistance: 0
-  patrolSpeed: 0
-  chaseSpeed: 0
+  patrolPoints:
+  - {x: 7, y: -5, z: 0}
+  - {x: 7, y: 5, z: 0}
+  - {x: 2, y: 5, z: 0}
+  - {x: 2, y: -5, z: 0}
+  viewDistance: 1
+  searchFrequencySeconds: 0.2
+  patrolSpeed: 1
+  chaseSpeed: 2
+  secondsToGiveUpChase: 5
 --- !u!1 &1207789097
 GameObject:
   m_ObjectHideFlags: 0
