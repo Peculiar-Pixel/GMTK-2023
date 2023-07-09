@@ -20,4 +20,9 @@ public class UIController : MonoBehaviour
         //current menu on
         menu.SetActive(true);
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
