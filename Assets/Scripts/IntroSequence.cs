@@ -39,6 +39,6 @@ public class IntroSequence : MonoBehaviour
             line++;
         }
         yield return new WaitForSecondsRealtime(3);
-        SceneManager.LoadSceneAsync(0);
+        SceneManager.LoadSceneAsync(1);
     }
 }

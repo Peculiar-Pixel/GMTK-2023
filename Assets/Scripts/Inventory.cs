@@ -81,7 +81,7 @@ public class Inventory : MonoBehaviour
             else
             {
                 //change later
-                if (placedAllItems) SceneManager.LoadSceneAsync(0);
+                if (placedAllItems) SceneManager.LoadSceneAsync(3);
             }
         }        
     }
