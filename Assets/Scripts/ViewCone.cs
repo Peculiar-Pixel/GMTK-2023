@@ -31,6 +31,7 @@ public class ViewCone : MonoBehaviour
                 float dstToTarget = Vector3.Distance(transform.position, target.position);
                 if(!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
+                    //player is detected
                     lastKnownLocation = target.position;
                 }
             }
