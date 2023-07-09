@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
             }
 
             //do moton
-            rb.velocity = moveDir * Time.deltaTime * speed;
+            rb.velocity = Vector3.Normalize(moveDir) * Time.deltaTime * speed;
         }
     }
 

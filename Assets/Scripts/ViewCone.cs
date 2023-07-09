@@ -13,6 +13,7 @@ public class ViewCone : MonoBehaviour
     public LayerMask obstacleMask;
 
     public Vector3 lastKnownLocation;
+    public bool targetInRange = false;
 
     private void FixedUpdate()
     {
@@ -34,7 +35,14 @@ public class ViewCone : MonoBehaviour
                 {
                     //player is detected
                     lastKnownLocation = target.position;
+                    targetInRange = true;
+                    //Debug.Log("I see player");
                 }
+            }
+            else
+            {
+                targetInRange = false;
+                //Debug.Log("player lost");
             }
         }
     }
