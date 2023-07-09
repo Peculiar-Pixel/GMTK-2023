@@ -31,11 +31,7 @@ public class IntroSequence : MonoBehaviour
             {
                 text.text += story[line][character];
                 thud.Play();
-                while (thud.isPlaying)
-                {
-                    // wait
-                }
-
+                yield return new WaitForSecondsRealtime(charWait);
                 character++;
             }
             text.text += "\n\n";
