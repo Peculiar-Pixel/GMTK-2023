@@ -4,34 +4,27 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-    private Vector3 LastSeenLocation;
     [SerializeField] private Vector3[] PatrolPoints;
+    private Vector3 targetPosition, lastSeenLocation;
+
     [SerializeField] private float viewDistance;
+    [SerializeField] private int patrolSpeed, chaseSpeed;
 
-    private CompositeCollider2D myCone;
+    private bool chasePlayer = false;
 
-    void Start()
+    private void Start()
     {
-        myCone = GetComponentInChildren<CompositeCollider2D>();
     }
 
-    void Update()
+    private void Update()
     {
-        
     }
 
     private void Patrolling()
     {
-
     }
 
     private void FoundPlayer()
     {
-
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log("Name");
     }
 }
