@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 654118773089611272}
   m_Layer: 7
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -119,7 +119,7 @@ Transform:
   m_Children:
   - {fileID: 15495957517456223}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8931119528040690598
 SpriteRenderer:
@@ -275,6 +275,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   items:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  itemsGraphic:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

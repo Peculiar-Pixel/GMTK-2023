@@ -5003,10 +5003,6 @@ PrefabInstance:
       propertyPath: m_Color.g
       value: 0.4745098
       objectReference: {fileID: 0}
-    - target: {fileID: 1371769740446700797, guid: b06a3579b87940e449a3c0f250de61b9, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3364488347899054833, guid: b06a3579b87940e449a3c0f250de61b9, type: 3}
       propertyPath: viewAngle
       value: 68
@@ -5066,14 +5062,9 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7365564295563324010, guid: b06a3579b87940e449a3c0f250de61b9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1146693585}
-    - targetCorrespondingSourceObject: {fileID: 7365564295563324010, guid: b06a3579b87940e449a3c0f250de61b9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1146693590}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b06a3579b87940e449a3c0f250de61b9, type: 3}
+
 --- !u!1 &1146693584 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7365564295563324010, guid: b06a3579b87940e449a3c0f250de61b9, type: 3}
