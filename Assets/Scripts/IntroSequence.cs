@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class IntroSequence : MonoBehaviour
 {
     private string[] story;
-    private float charWait = 0.1f, lineWait = 0.8f;
+    private float charWait = 0.2f, lineWait = 0.8f;
     private int line = 0, character = 0;
 
     [SerializeField] private Text text;
@@ -38,5 +38,7 @@ public class IntroSequence : MonoBehaviour
             yield return new WaitForSeconds(lineWait);
             line++;
         }
+        yield return new WaitForSecondsRealtime(3);
+        SceneManager.LoadSceneAsync(0);
     }
 }
