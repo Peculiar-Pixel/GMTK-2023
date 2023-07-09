@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-
     public GameObject[] itemsThisLevel;
-    [SerializeField] private Inventory player;
+    [SerializeField] private GameObject player;
 
-    // Start is called before the first frame update
     void Start()
     {
         for (int i = 0; i < itemsThisLevel.Length; i++)
         {
-            player.GetNewItem(itemsThisLevel[i]);
+            player.GetComponent<Inventory>().GetNewItem(itemsThisLevel[i]);
         }        
     }
 
