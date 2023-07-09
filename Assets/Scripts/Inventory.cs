@@ -37,10 +37,12 @@ public class Inventory : MonoBehaviour
         Destroy(items[itemIndex]);
         for (int i = 0; i < slots.Length; i++)
         {
+            Debug.Log(isFull[i]);
             if (isFull[i] == true)
                 return;
         }
         placedAllItems = true;
+        Debug.Log("Placed all items: " + placedAllItems);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -49,6 +51,7 @@ public class Inventory : MonoBehaviour
         {
             canPlaceItem = true;
             interactionArea = collision.gameObject;
+            Debug.Log("error");
         }
     }
 
@@ -65,11 +68,15 @@ public class Inventory : MonoBehaviour
     {
         if (Input.GetButtonDown("Interact") && canPlaceItem && interactionArea)
         {
-            if(!interactionArea.GetComponent<InteractionArea>().ExitStage)
+            
+            if (interactionArea.GetComponent<InteractionArea>().ExitStage == false)
             {
-                int i = interactionArea.GetComponent<InteractionArea>().requiredItemIndex;
-                RemoveItem(i);
-                Instantiate(itemsGraphic[i], interactionArea.transform, false);
+                int i = interactionArea.GetComponent<InteractionArea>().requiredItemIndex;                
+                if (isFull[i])
+                {
+                    RemoveItem(i);
+                    Instantiate(itemsGraphic[i], interactionArea.transform, false);
+                }                
             }
             else
             {
