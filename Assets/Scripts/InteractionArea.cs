@@ -5,4 +5,5 @@ using UnityEngine;
 public class InteractionArea : MonoBehaviour
 {
     [SerializeField] public int requiredItemIndex;
+    [SerializeField] public bool ExitStage;
 }
