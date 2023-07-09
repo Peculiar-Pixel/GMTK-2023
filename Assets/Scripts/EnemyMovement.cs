@@ -14,16 +14,19 @@ public class EnemyMovement : MonoBehaviour
 
     [SerializeField] private Vector3[] patrolPoints;
     private List<Vector3> playerPath = new List<Vector3>();
-    private Vector3 targetPosition, lastSeenLocation;
+
+    [SerializeField] private Vector3 targetPosition;
+    private float acceptableDistToTarget = 0.1f;
 
     [SerializeField] private float viewDistance, chaseDocumentFrequency;
     [SerializeField] private int patrolSpeed, chaseSpeed, secondsToGiveUpChase;
-    private int speed, currentPoint = 0, pointLeft = 0;
+    [SerializeField] private int speed, currentPoint = 0, pointLeft = 0;
 
     private ViewCone viewCone;
 
-    private bool waiting = false, givingUp = false;
+    private bool waiting = false;
     private SpriteRenderer sr;
+    private Rigidbody2D rb;
 
     private EnemyStates enemyState = EnemyStates.patrolling;
 
@@ -33,14 +36,15 @@ public class EnemyMovement : MonoBehaviour
         targetPosition = patrolPoints.Length > 0 ? patrolPoints[0] : transform.position;
         viewCone = GetComponent<ViewCone>();
         sr = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         //find move mode
         if (viewCone.targetInRange) //chase player if in range
         {
-            if (enemyState != EnemyStates.chasing) //just discovred player
+            if (enemyState == EnemyStates.patrolling) //just discovred player
             {
                 pointLeft = currentPoint;
             }
@@ -67,7 +71,7 @@ public class EnemyMovement : MonoBehaviour
             sr.color = new Color(1, 1, 0f, 1f);
 
             //move through saved path backwards
-            if (transform.position == targetPosition)
+            if (CloseEnough())
             {
                 playerPath.RemoveAt(currentPoint);
 
@@ -82,21 +86,22 @@ public class EnemyMovement : MonoBehaviour
             }
             targetPosition = playerPath[currentPoint];
         }
-        else if (enemyState == EnemyStates.patrolling)//patrolling
+        else if (enemyState == EnemyStates.patrolling) //patrolling
         {
             sr.color = Color.green;
 
-            if (transform.position == targetPosition)
+            targetPosition = patrolPoints[currentPoint];
+            if (CloseEnough())
             {
                 //next point
                 if (patrolPoints.Length > 0) currentPoint = ++currentPoint % patrolPoints.Length;
             }
-            targetPosition = patrolPoints[currentPoint];
             speed = patrolSpeed;
         }
 
         //move
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+        transform.up = targetPosition - transform.position;
+        rb.velocity = Vector3.Normalize(transform.up) * Time.fixedDeltaTime * speed;
     }
 
     private IEnumerator SavePath()
@@ -112,5 +117,14 @@ public class EnemyMovement : MonoBehaviour
         yield return new WaitForSecondsRealtime(secondsToGiveUpChase);
         currentPoint = playerPath.Count - 1;
         enemyState = EnemyStates.backtracking;
+    }
+
+    private bool CloseEnough()
+    {
+        if (Vector3.Distance(targetPosition, transform.position) < acceptableDistToTarget)
+        {
+            return true;
+        }
+        return false;
     }
 }

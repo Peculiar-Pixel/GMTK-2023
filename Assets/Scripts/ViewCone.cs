@@ -36,14 +36,24 @@ public class ViewCone : MonoBehaviour
                     //player is detected
                     lastKnownLocation = target.position;
                     targetInRange = true;
-                    //Debug.Log("I see player");
+                    Debug.Log("I see player");
+                }
+                else
+                {
+                    targetInRange = false;
+                    Debug.Log("player lost 1");
                 }
             }
             else
             {
                 targetInRange = false;
-                //Debug.Log("player lost");
+                Debug.Log("player lost 2");
             }
+        }
+        if (targetsInViewRadius.Length == 0)
+        {
+            targetInRange = false;
+            Debug.Log("player lost 3");
         }
     }
 

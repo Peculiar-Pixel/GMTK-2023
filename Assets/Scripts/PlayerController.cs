@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
                     motionState = MotionState.running; //mode
 
                     //stamina handling
-                    stamina -= Mathf.Clamp(staminaChangeSpeed * Time.deltaTime, 0, 100);
+                    stamina -= Mathf.Clamp(staminaChangeSpeed * Time.fixedDeltaTime, 0, 100);
                     staminaBar.fillAmount = stamina / 100;
 
                     speed = runSpeed;
@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
                 if (stamina < 100 && runReleased)
                 {
-                    stamina += Mathf.Clamp(staminaChangeSpeed * Time.deltaTime, 0, 100);
+                    stamina += Mathf.Clamp(staminaChangeSpeed * Time.fixedDeltaTime, 0, 100);
                     staminaBar.fillAmount = stamina / 100;
                 }
                 runReleased = true;
@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
             }
 
             //do moton
-            rb.velocity = Vector3.Normalize(moveDir) * Time.deltaTime * speed;
+            rb.velocity = Vector3.Normalize(moveDir) * Time.fixedDeltaTime * speed;
         }
     }
 
