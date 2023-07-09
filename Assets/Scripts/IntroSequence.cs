@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class IntroSequence : MonoBehaviour
 {
     private string[] story;
-    private float charWait = 0.1f, lineWait = 0.3f;
+    private float charWait = 0.1f, lineWait = 0.8f;
     private int line = 0, character = 0;
+
+    [SerializeField] private Text text;
+    [SerializeField] private AudioSource thud;
 
     // Start is called before the first frame update
     private void Start()
@@ -15,14 +19,28 @@ public class IntroSequence : MonoBehaviour
         story = new string[] { "The British Museum has many things on display that belong elsewhere...",
                    "This is the story about how one person returned the items to their rightful places"};
 
-        StartCoroutine(PrintLine());
+        StartCoroutine(PrintLines());
     }
 
-    private IEnumerator PrintLine()
+    private IEnumerator PrintLines()
     {
-    }
+        while (line < story.Length)
+        {
+            character = 0;
+            while (character < story[line].Length)
+            {
+                text.text += story[line][character];
+                thud.Play();
+                while (thud.isPlaying)
+                {
+                    // wait
+                }
 
-    private IEnumerator PrintChar()
-    {
+                character++;
+            }
+            text.text += "\n\n";
+            yield return new WaitForSeconds(lineWait);
+            line++;
+        }
     }
 }
