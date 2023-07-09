@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float walkSpeed, runSpeed, dashSpeed, staminaChangeSpeed;
     [SerializeField] private float dashTimeSeconds, dashCooldownSeconds;
     [SerializeField] private float stamina;
+    [SerializeField] private Image staminaBar, dashBar;
 
     //direction handling
     private Vector3 moveDir;
@@ -27,7 +29,7 @@ public class PlayerController : MonoBehaviour
     //internal variables
     private Rigidbody2D rb;
     private int zRotation;
-    private bool canDash = true;
+    private bool canDash = true, runReleased = true;
     private float speed;
     private Vector3[] eightAxis = new Vector3[] { new Vector3(1, 0, 0), new Vector3(1, 1, 0), new Vector3(0, 1, 0), new Vector3(-1, 1, 0), new Vector3(-1, 0, 0), new Vector3(-1, -1, 0), new Vector3(0, -1, 0), new Vector3(1, -1, 0) };
 
@@ -50,35 +52,43 @@ public class PlayerController : MonoBehaviour
                 nonzeroDir = moveDir;
             }
 
-            //set move state
-            if (moveDir == Vector3.zero)
+            //Run handling
+            if (Input.GetAxisRaw("Run") != 0)
             {
-                motionState = MotionState.idle;
-            }
-            else if (Input.GetAxisRaw("Run") != 0 && stamina > 0)
-            {
-                motionState = MotionState.running;
-                speed = runSpeed;
+                if (stamina > 0)
+                {
+                    motionState = MotionState.running; //mode
+
+                    //stamina handling
+                    stamina -= Mathf.Clamp(staminaChangeSpeed * Time.deltaTime, 0, 100);
+                    staminaBar.fillAmount = stamina / 100;
+
+                    speed = runSpeed;
+                }
+                else
+                {
+                    motionState = MotionState.walking;
+                    speed = walkSpeed;
+                }
+                runReleased = false;
             }
             else
             {
                 motionState = MotionState.walking;
                 speed = walkSpeed;
-            }
 
-            //Run handling
-            if (motionState == MotionState.running)
-            {
-                stamina -= Mathf.Clamp(staminaChangeSpeed * Time.deltaTime, 0, 100);
-
-                if (stamina <= 0)
+                if (stamina < 100 && runReleased)
                 {
-                    motionState = MotionState.idle;
+                    stamina += Mathf.Clamp(staminaChangeSpeed * Time.deltaTime, 0, 100);
+                    staminaBar.fillAmount = stamina / 100;
                 }
+                runReleased = true;
             }
-            else if (stamina < 100 && Input.GetAxisRaw("Run") == 0)
+
+            //override move state in case of idling (do not alert guards by running in the same place?)
+            if (moveDir == Vector3.zero)
             {
-                stamina += Mathf.Clamp(staminaChangeSpeed * Time.deltaTime, 0, 100);
+                motionState = MotionState.idle;
             }
 
             //set 8-axis rotation
@@ -107,14 +117,30 @@ public class PlayerController : MonoBehaviour
     private IEnumerator Dash()
     {
         canDash = false;
+        dashBar.color = Color.gray;
+        dashBar.fillAmount = 0;
 
         motionState = MotionState.dashing;
         rb.velocity = nonzeroDir * dashSpeed; //dash
+
         yield return new WaitForSeconds(dashTimeSeconds);
 
-        motionState = MotionState.walking;
-        yield return new WaitForSeconds(dashCooldownSeconds);
+        motionState = MotionState.idle;
+        StartCoroutine(RefillDash());
+    }
+
+    private IEnumerator RefillDash()
+    {
+        float timeWaited = 0;
+
+        while (timeWaited < dashCooldownSeconds)
+        {
+            yield return new WaitForSeconds(0.1f);
+            timeWaited += 0.1f;
+            dashBar.fillAmount = timeWaited / dashCooldownSeconds;
+        }
 
         canDash = true;
+        dashBar.color = Color.white;
     }
 }
