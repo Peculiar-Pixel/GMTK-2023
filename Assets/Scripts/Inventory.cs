@@ -23,7 +23,7 @@ public class Inventory : MonoBehaviour
         }
     }
     
-    public void RemoveItem()
+    public void RemoveItem(int itemIndex)
     {
 
     }
